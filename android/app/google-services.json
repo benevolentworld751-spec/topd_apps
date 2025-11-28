@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1043365558412",
+    "project_id": "topd-apps-91b2d",
+    "storage_bucket": "topd-apps-91b2d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1043365558412:android:9fea96e89bc130f9cae3a9",
+        "android_client_info": {
+          "package_name": "com.example.topd_apps"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5ozOiUDnuXpEgGTZm9x0gGhxNMh7FPiY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
