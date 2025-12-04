@@ -1,1 +1,25 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"topd-apps-91b2d","appId":"1:1043365558412:android:9fea96e89bc130f9cae3a9","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"topd-apps-91b2d","configurations":{"android":"1:1043365558412:android:9fea96e89bc130f9cae3a9","ios":"1:1043365558412:ios:33df61cd6a999618cae3a9","web":"1:1043365558412:web:7cd60deaf169e98ccae3a9","windows":"1:1043365558412:web:08765a0e0dfda42ccae3a9"}}}}}}
+{
+  "flutter":
+  {
+    "platforms":
+  {
+    "android":
+  {
+    "default":
+  {
+    "projectId":"topd-app",
+    "appId":"1:722931836564:android:d6f71536b42ffeaf50b681",
+    "fileOutput":"android/app/google-services.json"}
+  },
+    "dart":{"lib/firebase_options.dart":
+    {"projectId":"topd-app","configurations":
+    {"android":"1:722931836564:android:d6f71536b42ffeaf50b681",
+      "ios":"1:722931836564:ios:cac5d7e9df932bac50b681",
+      "web":"1:722931836564:web:3f54fa6a86e6880250b681",
+      "windows":"1:722931836564:web:7fb00d645a9a624550b681"
+    }
+    }
+    }
+  }
+  }
+}

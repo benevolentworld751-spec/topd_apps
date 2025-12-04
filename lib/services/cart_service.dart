@@ -9,7 +9,7 @@ class CartService with ChangeNotifier {
   List<CartItem> get cartItems => List.unmodifiable(_cartItems);
 
   double get subtotal => _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
-  double get tax => subtotal * 0.08; // Example tax rate
+  double get tax => subtotal * 0.18; // Example tax rate
   double get deliveryFee => 5.00; // Example delivery fee
   double get total => subtotal + tax + deliveryFee;
 

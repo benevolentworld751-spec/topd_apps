@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart'; // for debugPrint
 import 'package:uuid/uuid.dart';
 
+
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final Uuid _uuid = const Uuid();
@@ -13,6 +14,8 @@ class FirestoreService {
   // -------------------------
   // Menu Operations
   // -------------------------
+
+
   Stream<List<MenuItem>> getMenuItems() {
     debugPrint('FirestoreService: Fetching menu items...');
 
@@ -47,13 +50,15 @@ class FirestoreService {
     } catch (e, st) {
       debugPrint('ERROR adding menu item: $e');
       debugPrint('Stacktrace: $st');
-      throw e;
+      rethrow;
     }
   }
 
   // -------------------------
   // Order Operations
   // -------------------------
+
+
   Future<void> placeOrder(AppOrder order) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
@@ -72,7 +77,7 @@ class FirestoreService {
     } catch (e, st) {
       debugPrint('ERROR placing order $orderId: $e');
       debugPrint('Stacktrace: $st');
-      throw e;
+      rethrow;
     }
   }
 

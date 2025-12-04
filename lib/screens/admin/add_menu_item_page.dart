@@ -76,30 +76,30 @@ class _AddMenuItemPageState extends State<AddMenuItemPage> {
   Future<String> uploadImage() async {
     try {
       String fileName = "menu_${DateTime.now().millisecondsSinceEpoch}.jpg";
-      Reference ref = FirebaseStorage.instance.ref().child("menuImages/$fileName");
 
-      print("Uploading to path: ${ref.fullPath}");
+      // Correct bucket URL
+      final ref = FirebaseStorage.instance
+          .refFromURL('gs://topd-app.firebasestorage.app/menuImages/$fileName');
 
       UploadTask uploadTask;
 
       if (kIsWeb && webImage != null) {
         final metadata = SettableMetadata(
           contentType: "image/jpeg",
-          customMetadata: {
-            "fileName": fileName,
-          },
+          customMetadata: {"fileName": fileName},
         );
-
-        print("Uploading image to Firebase Storage (Web)...");
         uploadTask = ref.putData(webImage!, metadata);
-
       } else if (!kIsWeb && pickedImage != null) {
-        print("Uploading image to Firebase Storage (Mobile)...");
         uploadTask = ref.putFile(File(pickedImage!.path));
-
       } else {
         throw "No image selected for upload";
       }
+
+      uploadTask.snapshotEvents.listen((event) {
+        print('Upload progress: ${event.bytesTransferred}/${event.totalBytes}');
+      }, onError: (e) {
+        print('Upload error: $e');
+      });
 
       final snapshot = await uploadTask.whenComplete(() => {});
       final imageUrl = await snapshot.ref.getDownloadURL();
@@ -112,6 +112,8 @@ class _AddMenuItemPageState extends State<AddMenuItemPage> {
       throw "Upload failed: $e";
     }
   }
+
+
 
   // -------------------- SAVE PRODUCT --------------------
   Future<void> saveProduct() async {

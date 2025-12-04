@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "1043365558412",
-    "project_id": "topd-apps-91b2d",
-    "storage_bucket": "topd-apps-91b2d.firebasestorage.app"
+    "project_number": "722931836564",
+    "firebase_url": "https://topd-app-default-rtdb.firebaseio.com",
+    "project_id": "topd-app",
+    "storage_bucket": "topd-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1043365558412:android:9fea96e89bc130f9cae3a9",
+        "mobilesdk_app_id": "1:722931836564:android:d6f71536b42ffeaf50b681",
         "android_client_info": {
           "package_name": "com.example.topd_apps"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "722931836564-8tvq7mpfd0tucuc6rmaj6r0ifdh4amg4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyD5ozOiUDnuXpEgGTZm9x0gGhxNMh7FPiY"
+          "current_key": "AIzaSyBvDu_6ZGOn4lSdWqYygFi_-G8rM7Kn_4s"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "722931836564-8tvq7mpfd0tucuc6rmaj6r0ifdh4amg4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "722931836564-uku33lk0rtf6arund4b74j0tteqpv4iq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.topdApp"
+              }
+            }
+          ]
         }
       }
     }

@@ -3,6 +3,7 @@ import 'admin_home.dart';
 import 'admin_orders.dart';
 import 'admin_products.dart';
 import 'admin_users.dart';
+import 'admin_reviews.dart'; // <-- import Reviews page
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -19,6 +20,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     AdminOrders(),
     AdminProducts(),
     AdminUsers(),
+    AdminReviewsScreen(), // <-- add Reviews page
   ];
 
   @override
@@ -59,6 +61,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           _menuItem(Icons.list_alt, "Orders", 1),
           _menuItem(Icons.fastfood, "Products", 2),
           _menuItem(Icons.people, "Users", 3),
+          _menuItem(Icons.star, "Reviews", 4), // <-- Reviews menu item
 
           const Spacer(),
           _menuItem(Icons.logout, "Logout", 99, isLogout: true),
