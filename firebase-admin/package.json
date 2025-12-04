@@ -1,0 +1,20 @@
+{
+  "name": "firebase-admin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setAdminByUID": "node setAdmin.js",
+    "setAdminByEmail": "node setAdminByEmail.js",
+    "createFolder": "node createFolder.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^7.17.3",
+    "firebase-admin": "^13.6.0"
+  }
+}
+
