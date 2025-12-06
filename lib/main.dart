@@ -2,6 +2,7 @@ import 'package:topd_apps/auth/auth_service.dart';
 import 'package:topd_apps/screens/admin/add_menu_item_page.dart';
 import 'package:topd_apps/screens/admin/admin_dashboard.dart';
 import 'package:topd_apps/screens/admin/edit_menu_item_page.dart';
+import 'package:topd_apps/screens/auth/forgate_password.dart';
 import 'package:topd_apps/screens/auth/login_screen.dart';
 import 'package:topd_apps/screens/auth/signup_screen.dart';
 import 'package:topd_apps/screens/main/home_screen.dart';
@@ -37,9 +38,6 @@ void main() async {
     ),
   );
 }
-
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -102,10 +100,12 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomeScreen(),
         '/admin': (context) => const AdminDashboard(),
         '/add-menu-item': (context) => const AddMenuItemPage(),
+        '/forgotPassword': (context) => ForgotPasswordPage(),
       },
     );
   }
 }
+
 
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});

@@ -8,7 +8,7 @@ class OrderSuccessScreen extends StatelessWidget {
   final String orderId;
   final Map<String, dynamic> orderData;
 
-  OrderSuccessScreen({
+  const OrderSuccessScreen({
     super.key,
     required this.orderId,
     required this.orderData,

@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   static final List<Widget> _widgetOptions = <Widget>[
-    const MenuScreen(),
+     MenuScreen(category: 'category'),
     const CartScreen(),
     const OrderHistoryScreen(),
   ];
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Teste of purani Dilli'),
+        title: const Text('Teste of Purani Dilli'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),

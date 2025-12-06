@@ -1,8 +1,8 @@
 import 'menu_item.dart';
 
 class CartItem {
-  final MenuItem item;
-  int quantity; // <-- NOT final so we can change it
+  final dynamic item;
+  int quantity;// <-- NOT final so we can change it
 
   CartItem({
     required this.item,
@@ -25,3 +25,4 @@ class CartItem {
 
   double get totalPrice => item.price * quantity;
 }
+
