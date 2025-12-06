@@ -3,7 +3,7 @@ import 'package:topd_apps/models/menu_item.dart';
 import 'package:topd_apps/models/app_order.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart'; // for debugPrint
+import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreService {
@@ -11,7 +11,7 @@ class FirestoreService {
   final Uuid _uuid = const Uuid();
 
   // -------------------------
-  // Menu Operations
+  // MENU ITEMS (Existing)
   // -------------------------
   Stream<List<MenuItem>> getMenuItems() {
     debugPrint('FirestoreService: Fetching menu items...');
@@ -20,23 +20,16 @@ class FirestoreService {
       debugPrint('Snapshot received: ${snapshot.docs.length} items');
 
       try {
-        final menuItems = snapshot.docs
-            .where((doc) => doc.data().isNotEmpty) // skip empty docs
-            .map((doc) {
-          debugPrint('Processing MenuItem doc: ${doc.id}');
-          return MenuItem.fromFirestore(doc.data(), doc.id);
-        })
+        return snapshot.docs
+            .where((doc) => doc.data().isNotEmpty)
+            .map((doc) =>
+            MenuItem.fromFirestore(doc.data(), doc.id))
             .toList();
-
-        return menuItems;
       } catch (e, st) {
         debugPrint('ERROR parsing menu items: $e');
         debugPrint('Stacktrace: $st');
         return <MenuItem>[];
       }
-    }).handleError((error, stacktrace) {
-      debugPrint('Stream ERROR in getMenuItems: $error');
-      throw error;
     });
   }
 
@@ -47,12 +40,65 @@ class FirestoreService {
     } catch (e, st) {
       debugPrint('ERROR adding menu item: $e');
       debugPrint('Stacktrace: $st');
-      throw e;
+      rethrow;
     }
   }
 
+  // ================================================================
+  // 🔥 NEW FEATURE 1 — DYNAMIC CATEGORIES LIST
+  // ================================================================
+  Stream<List<String>> getCategories() {
+    return _db.collection("menuItems").snapshots().map((snapshot) {
+      final categories = snapshot.docs
+          .map((doc) => doc["category"]?.toString() ?? "Other")
+          .toSet()
+          .toList();
+
+      categories.sort();
+      return categories;
+    });
+  }
+
+  // ================================================================
+  // 🔥 NEW FEATURE 2 — CATEGORY → IMAGE (1 image per category)
+  // ================================================================
+  Stream<Map<String, String>> getCategoryImages() {
+    return _db.collection("menuItems").snapshots().map((snapshot) {
+      final Map<String, String> categoryImages = {};
+
+      for (var doc in snapshot.docs) {
+        final cat = doc["category"] ?? "Other";
+        final img = doc["imageUrl"] ?? "";
+
+        // Store only 1 image per category (first item)
+        categoryImages.putIfAbsent(cat, () => img);
+      }
+
+      return categoryImages;
+    });
+  }
+
+  // ================================================================
+  // 🔥 NEW FEATURE 3 — GET MENU ITEMS BY CATEGORY
+  // ================================================================
+  Stream<List<MenuItem>> getMenuItemsByCategory(String category) {
+    if (category == "All") {
+      return getMenuItems();
+    }
+
+    return _db
+        .collection("menuItems")
+        .where("category", isEqualTo: category)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) => MenuItem.fromFirestore(doc.data(), doc.id))
+          .toList();
+    });
+  }
+
   // -------------------------
-  // Order Operations
+  // ORDER OPERATIONS (Existing)
   // -------------------------
   Future<void> placeOrder(AppOrder order) async {
     final user = FirebaseAuth.instance.currentUser;
@@ -72,7 +118,7 @@ class FirestoreService {
     } catch (e, st) {
       debugPrint('ERROR placing order $orderId: $e');
       debugPrint('Stacktrace: $st');
-      throw e;
+      rethrow;
     }
   }
 
@@ -85,26 +131,14 @@ class FirestoreService {
         .orderBy('orderDate', descending: true)
         .snapshots()
         .map((snapshot) {
-      debugPrint('Snapshot received: ${snapshot.docs.length} orders');
-
       try {
-        final orders = snapshot.docs
-            .where((doc) => doc.data().isNotEmpty)
-            .map((doc) {
-          debugPrint('Processing order ID: ${doc.id}');
-          return AppOrder.fromFirestore(doc.data(), doc.id);
-        })
+        return snapshot.docs
+            .map((doc) => AppOrder.fromFirestore(doc.data(), doc.id))
             .toList();
-
-        return orders;
-      } catch (e, st) {
-        debugPrint('ERROR parsing user orders: $e');
-        debugPrint('Stacktrace: $st');
+      } catch (e) {
+        debugPrint('ERROR parsing orders: $e');
         return <AppOrder>[];
       }
-    }).handleError((error, stacktrace) {
-      debugPrint('Stream ERROR in getUserOrders: $error');
-      throw error;
     });
   }
 }

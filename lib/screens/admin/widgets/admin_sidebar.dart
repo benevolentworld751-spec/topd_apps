@@ -31,6 +31,7 @@ class AdminSidebar extends StatelessWidget {
           _navItem(Icons.receipt_long, "Orders", 1),
           _navItem(Icons.restaurant_menu, "Products", 2),
           _navItem(Icons.people, "Users", 3),
+          _navItem(Icons.star, "Reviews", 4),
 
           const Spacer(),
           _navItem(Icons.logout, "Logout", 99),

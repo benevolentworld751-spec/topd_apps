@@ -1,49 +1,66 @@
-// lib/services/cart_service.dart
-import 'package:topd_apps/models/cart_item.dart';
-import 'package:topd_apps/models/menu_item.dart';
 import 'package:flutter/material.dart';
+import 'package:topd_apps/models/cart_item.dart';
+import 'package:topd_apps/models/product.dart';
 
-class CartService with ChangeNotifier {
+class CartService extends ChangeNotifier {
   final List<CartItem> _cartItems = [];
 
-  List<CartItem> get cartItems => List.unmodifiable(_cartItems);
+  List<CartItem> get cartItems => _cartItems;
 
-  double get subtotal => _cartItems.fold(0.0, (sum, item) => sum + item.totalPrice);
-  double get tax => subtotal * 0.08; // Example tax rate
-  double get deliveryFee => 5.00; // Example delivery fee
-  double get total => subtotal + tax + deliveryFee;
+  // Add item
+  void addItemToCart(Product product) {
+    final index = _cartItems.indexWhere((item) => item.item.id == product.id);
 
-  int get totalItemsInCart => _cartItems.fold(0, (sum, item) => sum + item.quantity);
-
-  void addItemToCart(MenuItem item) {
-    int existingIndex = _cartItems.indexWhere((cartItem) => cartItem.item.id == item.id);
-    if (existingIndex != -1) {
-      _cartItems[existingIndex].quantity++;
+    if (index >= 0) {
+      _cartItems[index].quantity++;
     } else {
-      _cartItems.add(CartItem(item: item));
+      _cartItems.add(CartItem(item: product));
     }
+
     notifyListeners();
   }
 
-  void removeItemFromCart(MenuItem item) {
-    int existingIndex = _cartItems.indexWhere((cartItem) => cartItem.item.id == item.id);
-    if (existingIndex != -1) {
-      if (_cartItems[existingIndex].quantity > 1) {
-        _cartItems[existingIndex].quantity--;
+  // Remove one quantity
+  void removeItemFromCart(Product product) {
+    final index = _cartItems.indexWhere((item) => item.item.id == product.id);
+
+    if (index >= 0) {
+      if (_cartItems[index].quantity > 1) {
+        _cartItems[index].quantity--;
       } else {
-        _cartItems.removeAt(existingIndex);
+        _cartItems.removeAt(index);
       }
       notifyListeners();
     }
   }
 
-  void removeAllOfItemFromCart(MenuItem item) {
-    _cartItems.removeWhere((cartItem) => cartItem.item.id == item.id);
+  // Remove entire product
+  void removeAllOfItemFromCart(Product product) {
+    _cartItems.removeWhere((item) => item.item.id == product.id);
     notifyListeners();
   }
 
+  // Clear all
   void clearCart() {
     _cartItems.clear();
     notifyListeners();
   }
+
+  // ⭐ ADD THIS ⭐
+  int get totalItemsInCart {
+    int total = 0;
+    for (var item in _cartItems) {
+      total += item.quantity;
+    }
+    return total;
+  }
+  // Calculations
+  double get subtotal =>
+      _cartItems.fold(0, (sum, item) => sum + (item.item.price * item.quantity));
+
+  double get tax => subtotal * 0.08;
+
+  double get deliveryFee => subtotal == 0 ? 0 : 2.50;
+
+  double get total => subtotal + tax + deliveryFee;
 }

@@ -4,6 +4,16 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
+/// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// Example:
+/// ```dart
+/// import 'firebase_options.dart';
+/// // ...
+/// await Firebase.initializeApp(
+///   options: DefaultFirebaseOptions.currentPlatform,
+/// );
+/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -17,14 +27,14 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-              'you can reconfigure this by running the FlutterFire CLI again.',
+          'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -34,39 +44,42 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAd9AfbyyuvwWIfK0XL0Ax64fzaXAiGIBI',
-    appId: '1:1043365558412:web:7cd60deaf169e98ccae3a9',
-    messagingSenderId: '1043365558412',
-    projectId: 'topd-apps-91b2d',
-    authDomain: 'topd-apps-91b2d.firebaseapp.com',
-    storageBucket: 'topd-apps-91b2d.appspot.com',   // FIXED
-    measurementId: 'G-6CZ9VSHSTF',
+    apiKey: 'AIzaSyC7sFPFcnFWyz0_cfantgZitfG6DwRHoSI',
+    appId: '1:722931836564:web:3f54fa6a86e6880250b681',
+    messagingSenderId: '722931836564',
+    projectId: 'topd-app',
+    authDomain: 'topd-app.firebaseapp.com',
+    databaseURL: 'https://topd-app-default-rtdb.firebaseio.com',
+    storageBucket: 'topd-app.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD5ozOiUDnuXpEgGTZm9x0gGhxNMh7FPiY',
-    appId: '1:1043365558412:android:9fea96e89bc130f9cae3a9',
-    messagingSenderId: '1043365558412',
-    projectId: 'topd-apps-91b2d',
-    storageBucket: 'topd-apps-91b2d.appspot.com',   // FIXED
+    apiKey: 'AIzaSyBvDu_6ZGOn4lSdWqYygFi_-G8rM7Kn_4s',
+    appId: '1:722931836564:android:d6f71536b42ffeaf50b681',
+    messagingSenderId: '722931836564',
+    projectId: 'topd-app',
+    databaseURL: 'https://topd-app-default-rtdb.firebaseio.com',
+    storageBucket: 'topd-app.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBtAs8GdGYrEAeFxxw2r1AZoAaBUjq4uFE',
-    appId: '1:1043365558412:ios:33df61cd6a999618cae3a9',
-    messagingSenderId: '1043365558412',
-    projectId: 'topd-apps-91b2d',
-    storageBucket: 'topd-apps-91b2d.appspot.com',   // FIXED
+    apiKey: 'AIzaSyD4E2B17RfDDW7VOC6b0Yo_6ff2JVx34XU',
+    appId: '1:722931836564:ios:cac5d7e9df932bac50b681',
+    messagingSenderId: '722931836564',
+    projectId: 'topd-app',
+    databaseURL: 'https://topd-app-default-rtdb.firebaseio.com',
+    storageBucket: 'topd-app.firebasestorage.app',
+    iosClientId: '722931836564-28dkc4n5kk792qkpfdgjd66tfqqs8el4.apps.googleusercontent.com',
     iosBundleId: 'com.example.topdApps',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAd9AfbyyuvwWIfK0XL0Ax64fzaXAiGIBI',
-    appId: '1:1043365558412:web:08765a0e0dfda42ccae3a9',
-    messagingSenderId: '1043365558412',
-    projectId: 'topd-apps-91b2d',
-    authDomain: 'topd-apps-91b2d.firebaseapp.com',
-    storageBucket: 'topd-apps-91b2d.appspot.com',   // FIXED
-    measurementId: 'G-6Y0FL1YMT4',
+    apiKey: 'AIzaSyC7sFPFcnFWyz0_cfantgZitfG6DwRHoSI',
+    appId: '1:722931836564:web:7fb00d645a9a624550b681',
+    messagingSenderId: '722931836564',
+    projectId: 'topd-app',
+    authDomain: 'topd-app.firebaseapp.com',
+    databaseURL: 'https://topd-app-default-rtdb.firebaseio.com',
+    storageBucket: 'topd-app.firebasestorage.app',
   );
 }

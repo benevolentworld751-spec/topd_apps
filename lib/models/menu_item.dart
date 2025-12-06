@@ -6,6 +6,7 @@ class MenuItem {
   final double price;
   final String category;
 
+
   MenuItem({
     required this.id,
     required this.name,
@@ -13,6 +14,7 @@ class MenuItem {
     required this.imageUrl,
     required this.price,
     required this.category,
+
   });
 
   // For Firestore usage
@@ -34,6 +36,7 @@ class MenuItem {
       'imageUrl': imageUrl,
       'price': price,
       'category': category,
+
     };
   }
 

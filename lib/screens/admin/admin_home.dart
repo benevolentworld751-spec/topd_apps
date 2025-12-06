@@ -48,7 +48,7 @@ class AdminHome extends StatelessWidget {
     await FirebaseFirestore.instance.collection('users').get();
 
     final productsSnapshot =
-    await FirebaseFirestore.instance.collection('products').get();
+    await FirebaseFirestore.instance.collection('menuItems').get();
 
     // 🔢 Total Orders
     int totalOrders = ordersSnapshot.docs.length;
@@ -65,7 +65,7 @@ class AdminHome extends StatelessWidget {
       "totalOrders": totalOrders,
       "revenue": revenue,
       "users": usersSnapshot.docs.length,
-      "products": productsSnapshot.docs.length,
+      "menuItems": productsSnapshot.docs.length,
     };
   }
 
