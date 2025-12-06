@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../order/product_list_screen.dart';
 
-// Make sure this import exists
+// --- IMPORT FIX ---
+// Only keep ONE import line.
+// If product_list_screen.dart is in the same folder, use this:
+import 'product_list_screen.dart';
+
+// If it is in a folder named 'order', use this instead:
+// import '../order/product_list_screen.dart';
 
 class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key, required String category});
+  const MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,26 +22,24 @@ class MenuScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: StreamBuilder(
+        child: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('categories').snapshots(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            // 1. Loading State
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            var cats = snapshot.data!.docs;
-
-            if (cats.isEmpty) {
+            // 2. Error State
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
               return const Center(
-                child: Text(
-                  "No categories found",
-                  style: TextStyle(fontSize: 18),
-                ),
+                child: Text("No categories found", style: TextStyle(fontSize: 18)),
               );
             }
+
+            var cats = snapshot.data!.docs;
 
             return GridView.builder(
               itemCount: cats.length,
@@ -47,7 +50,12 @@ class MenuScreen extends StatelessWidget {
                 childAspectRatio: 0.95,
               ),
               itemBuilder: (context, index) {
-                final c = cats[index];
+                // Get data safely
+                final doc = cats[index];
+                final data = doc.data() as Map<String, dynamic>;
+
+                final String name = data['name'] ?? 'Unknown';
+                final String imageUrl = data['image'] ?? '';
 
                 return GestureDetector(
                   onTap: () {
@@ -55,8 +63,11 @@ class MenuScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) => ProductListScreen(
-                          categoryId: c.id,
-                          categoryName: c["name"],
+                          // CHANGE THIS LINE:
+                          // Old: categoryId: doc.id,
+                          // New: Pass the name because your items use "Main Course"
+                          categoryId: doc.id,
+                          categoryName: name,
                         ),
                       ),
                     );
@@ -64,29 +75,25 @@ class MenuScreen extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18),
-                      image: DecorationImage(
-                        image: NetworkImage(c["image"]),
+                      // Use a color as base in case image fails or loads
+                      color: Colors.grey[300],
+                      image: imageUrl.isNotEmpty
+                          ? DecorationImage(
+                        image: NetworkImage(imageUrl),
                         fit: BoxFit.cover,
                         colorFilter: ColorFilter.mode(
                           Colors.black.withOpacity(0.3),
                           BlendMode.darken,
                         ),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.12),
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                          offset: const Offset(2, 4),
-                        ),
-                      ],
+                      )
+                          : null,
                     ),
                     child: Align(
                       alignment: Alignment.bottomLeft,
                       child: Padding(
                         padding: const EdgeInsets.all(12),
                         child: Text(
-                          c["name"],
+                          name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20,

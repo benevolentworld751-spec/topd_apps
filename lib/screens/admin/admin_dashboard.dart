@@ -1,112 +1,81 @@
 import 'package:flutter/material.dart';
-import 'admin_home.dart';
-import 'admin_orders.dart';
-import 'admin_products.dart';
-import 'admin_users.dart';
-import 'admin_reviews.dart'; // <-- import Reviews page
+import 'package:provider/provider.dart';
+import '../../auth/auth_service.dart';
+import 'admin_categories_screen.dart';
+import 'admin_menu_items.dart';
+import 'admin_orders_screen.dart';
+import 'admin_users_screen.dart';
 
-class AdminDashboard extends StatefulWidget {
+class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
-}
-
-class _AdminDashboardState extends State<AdminDashboard> {
-  int selectedIndex = 0;
-
-  final List<Widget> pages = const [
-    AdminHome(),
-    AdminOrders(),
-    AdminProducts(),
-    AdminUsers(),
-    AdminReviewsScreen(), // <-- add Reviews page
-  ];
-
-  @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context, listen: false);
+
     return Scaffold(
-      body: Row(
-        children: [
-          _sideMenu(),
-          Expanded(child: pages[selectedIndex]),
-        ],
-      ),
-    );
-  }
-
-  // ---------------- LEFT MENU ----------------
-  Widget _sideMenu() {
-    return Container(
-      width: 230,
-      color: Colors.deepOrange,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 60),
-
-          const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Text(
-              "Admin Panel",
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+      appBar: AppBar(
+        title: const Text('Admin Dashboard'),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'logout') {
+                await authService.signOut();
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+              }
+            },
+            itemBuilder: (_) => const [
+              PopupMenuItem(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text('Logout'),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
-
-          _menuItem(Icons.dashboard, "Dashboard", 0),
-          _menuItem(Icons.list_alt, "Orders", 1),
-          _menuItem(Icons.fastfood, "Products", 2),
-          _menuItem(Icons.people, "Users", 3),
-          _menuItem(Icons.star, "Reviews", 4), // <-- Reviews menu item
-
-          const Spacer(),
-          _menuItem(Icons.logout, "Logout", 99, isLogout: true),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16
+          ),
+          children: [
+            _adminCard(context, 'Categories', Icons.category, const AdminCategoriesScreen()),
+            _adminCard(context, 'Menu Items', Icons.restaurant_menu, const AdminMenuItemsScreen()),
+            _adminCard(context, 'Orders', Icons.history, const AdminOrdersScreen()),
+            _adminCard(context, 'Users', Icons.people, const AdminUsersScreen()),
+          ],
+        ),
       ),
     );
   }
 
-  // ---------------- MENU ITEM ----------------
-  Widget _menuItem(
-      IconData icon,
-      String title,
-      int index, {
-        bool isLogout = false,
-      }) {
-    bool isSelected = selectedIndex == index;
-
-    return InkWell(
-      onTap: () {
-        if (isLogout) {
-          Navigator.pushReplacementNamed(context, '/login');
-          return;
-        }
-
-        setState(() => selectedIndex = index);
-      },
-      child: Container(
-        color: isSelected ? Colors.white.withOpacity(0.18) : Colors.transparent,
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: Colors.white,
-              size: 22,
-            ),
-            const SizedBox(width: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            )
-          ],
+  Widget _adminCard(BuildContext context, String title, IconData icon, Widget screen) {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => screen),
+      ),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 50, color: Colors.deepOrange.shade700),
+              const SizedBox(height: 12),
+              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
       ),
     );
