@@ -1,8 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:topd_apps/models/product.dart'; // Ensure this model exists
+import 'package:topd_apps/services/cart_service.dart';
+
+// IMPORTANT: If your CartService expects 'Product', use 'Product'.
+// If it expects 'MenuItem', use 'MenuItem'. I will assume 'Product' here based on your cast.
 
 class ProductListScreen extends StatelessWidget {
-  final String categoryId; // This receives the ID or Name passed from MenuScreen
+  final String categoryId;
   final String categoryName;
 
   const ProductListScreen({
@@ -20,73 +26,48 @@ class ProductListScreen extends StatelessWidget {
         foregroundColor: Colors.black,
         elevation: 0,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        // ----------------- DEBUG MODE -----------------
-        // The filter is commented out so we can see ALL items
-        // and check what is actually stored in the 'category' field.
-        stream: FirebaseFirestore.instance
-            .collection('menuItems')
-        // .where('category', isEqualTo: categoryId) // <--- UNCOMMENT THIS LATER
-            .snapshots(),
-        // ----------------------------------------------
+      body:  StreamBuilder<QuerySnapshot>(
+        // 1. Load ALL items (Remove the .where filter temporarily)
+        stream: FirebaseFirestore.instance.collection('menuItems').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // ----------------- DEBUG LOGS -----------------
-          // Check your "Run" console to see these logs!
-          if (snapshot.hasData) {
-            print("\n================ DEBUG START ================");
-            print("App is looking for category: '$categoryId'");
-            print("Found ${snapshot.data!.docs.length} total items in database.");
-
-            for (var doc in snapshot.data!.docs) {
-              final data = doc.data() as Map<String, dynamic>;
-              // Safely get fields to avoid crashes during debug
-              final itemName = data['name'] ?? 'No Name';
-              final itemCategory = data['category'] ?? 'NO CATEGORY FIELD';
-
-              print("Item: '$itemName' | DB Category: '$itemCategory'");
-
-              // Helper to spot spaces
-              if (itemCategory.toString().trim() != itemCategory.toString()) {
-                print("   >>> WARNING: Item '$itemName' has extra spaces in category!");
-              }
-            }
-            print("================ DEBUG END ==================\n");
-          }
-          // ----------------------------------------------
-
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text("Database is empty"));
+          }
+
+          // 2. Filter manually in the app (Ignores case and extra spaces)
+          final allItems = snapshot.data!.docs;
+          final filteredItems = allItems.where((doc) {
+            final data = doc.data() as Map<String, dynamic>;
+            final itemCategory = (data['category'] ?? '').toString();
+
+            // Compare ignoring lowercase/uppercase and spaces
+            return itemCategory.trim().toLowerCase() == categoryId.trim().toLowerCase();
+          }).toList();
+
+          if (filteredItems.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.restaurant_menu, size: 60, color: Colors.grey[400]),
-                  const SizedBox(height: 10),
-                  Text("No items found in database",
-                      style: TextStyle(color: Colors.grey[600])),
-                ],
-              ),
+              child: Text("No items found for: $categoryName"),
             );
           }
 
-          final items = snapshot.data!.docs;
-
           return ListView.builder(
             padding: const EdgeInsets.all(12),
-            itemCount: items.length,
+            itemCount: filteredItems.length,
             itemBuilder: (context, index) {
-              final data = items[index].data() as Map<String, dynamic>;
+              final data = filteredItems[index].data() as Map<String, dynamic>;
               return MenuItemCard(
-                itemId: items[index].id,
+                itemId: filteredItems[index].id,
                 data: data,
               );
             },
           );
         },
       ),
+
     );
   }
 }
@@ -106,36 +87,27 @@ class _MenuItemCardState extends State<MenuItemCard> {
 
   @override
   Widget build(BuildContext context) {
+    // 1. Extract Data
     final name = widget.data['name'] ?? 'Unknown';
     final image = widget.data['image'] ?? '';
     final isVeg = widget.data['isVeg'] ?? false;
+    final description = widget.data['description'] ?? ''; // Added this
+    final category = widget.data['category'] ?? ''; // Added this
 
-    // --- FIX FOR VARIANTS DATA STRUCTURE ---
+    // 2. Handle Variants Logic
     List<dynamic> variantsList = [];
-
-    // 1. Check if 'variants' is a List (Ideal structure)
     if (widget.data['variants'] is List) {
       variantsList = widget.data['variants'];
-    }
-    // 2. Check if 'variants' is a Map (Your current structure)
-    else if (widget.data['variants'] is Map) {
+    } else if (widget.data['variants'] is Map) {
       variantsList.add(widget.data['variants']);
-    }
-    // 3. Fallback: Check for old 'price' field
-    else if (widget.data['price'] != null) {
-      variantsList.add({
-        'price': widget.data['price'],
-        'unit': 'Full'
-      });
+    } else if (widget.data['price'] != null) {
+      variantsList.add({'price': widget.data['price'], 'unit': 'Full'});
     }
 
-    // If still empty, don't crash, just show 'Unavailable'
-    if (variantsList.isEmpty) {
-      return const SizedBox();
-    }
+    if (variantsList.isEmpty) return const SizedBox();
 
     final currentVariant = variantsList[_selectedVariantIndex];
-    final currentPrice = currentVariant['price'];
+    final double currentPrice = (currentVariant['price'] ?? 0).toDouble();
     final currentUnit = currentVariant['unit'] ?? 'Full';
 
     return Card(
@@ -153,9 +125,11 @@ class _MenuItemCardState extends State<MenuItemCard> {
               child: image.isNotEmpty
                   ? Image.network(
                 image, width: 90, height: 90, fit: BoxFit.cover,
-                errorBuilder: (c, e, s) => Container(width: 90, height: 90, color: Colors.grey[200], child: const Icon(Icons.fastfood)),
+                errorBuilder: (c, e, s) => Container(
+                    width: 90, height: 90, color: Colors.grey[200], child: const Icon(Icons.fastfood)),
               )
-                  : Container(width: 90, height: 90, color: Colors.grey[200], child: const Icon(Icons.fastfood)),
+                  : Container(
+                  width: 90, height: 90, color: Colors.grey[200], child: const Icon(Icons.fastfood)),
             ),
             const SizedBox(width: 12),
 
@@ -175,7 +149,7 @@ class _MenuItemCardState extends State<MenuItemCard> {
                   ),
                   const SizedBox(height: 8),
 
-                  // Dropdown (Only if multiple variants exist)
+                  // Variant Dropdown
                   if (variantsList.length > 1)
                     DropdownButton<int>(
                       value: _selectedVariantIndex,
@@ -191,14 +165,35 @@ class _MenuItemCardState extends State<MenuItemCard> {
 
                   const SizedBox(height: 8),
 
-                  // Price and Add
+                  // Price and Add Button
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text("₹$currentPrice", style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+
                       ElevatedButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Added $name")));
+                          // FIX: Create a Product directly instead of casting MenuItem
+                          // This prevents the "type 'MenuItem' is not a subtype of 'Product'" error
+                          final itemToAdd = Product(
+                            id: widget.itemId,
+                            name: name,
+                            imageUrl: image,
+                            price: currentPrice,
+                            description: description,
+                            category: category,
+                          );
+
+                          Provider.of<CartService>(context, listen: false)
+                              .addItemToCart(itemToAdd);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Added $name"),
+                                duration: const Duration(seconds: 1),
+                                backgroundColor: Colors.green,
+                              )
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,

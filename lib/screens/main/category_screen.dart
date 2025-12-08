@@ -55,7 +55,7 @@ class CategoryScreen extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => ProductListScreen(
                           // Ensure your CategoryModel has an 'id' field
-                          categoryId: category.id,
+                          categoryId: category.name,
                           categoryName: category.name,
                         ),
                       ),

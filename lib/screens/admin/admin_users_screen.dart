@@ -7,37 +7,94 @@ class AdminUsersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Users')),
+      appBar: AppBar(title: const Text('Manage Users')),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('users').snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+          // 1. Loading State
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          // 2. Error or Empty State
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No users found'));
+          }
           final docs = snapshot.data!.docs;
-
-          if (docs.isEmpty) return const Center(child: Text('No users found'));
-
-          return ListView.builder(
+          return ListView.separated(
+            padding: const EdgeInsets.all(12),
             itemCount: docs.length,
+            separatorBuilder: (context, index) => const Divider(),
             itemBuilder: (context, i) {
               final d = docs[i];
               final data = d.data() as Map<String, dynamic>;
-
-              final photoUrl = data['photoURL'] ?? null;
-              final displayName = data['displayName'] ?? data['email'] ?? '-';
-              final email = data['email'] ?? '-';
-
+              // 3. Extract Data safely (Check multiple common field names)
+              final photoUrl = data['photoURL'] ?? data['image'];
+              // Name: Check 'name', then 'displayName', then 'Unknown'
+              final String name = data['name'] ?? data['displayName'] ?? 'Unknown Name';
+              // Email: Check 'email'
+              final String email = data['email'] ?? 'No Email';
+              // Number: Check 'phoneNumber', 'phone', or 'mobile'
+              final String phone = data['phoneNumber'] ?? data['phone'] ?? data['mobile'] ?? 'No Number';
               return ListTile(
-                leading: photoUrl != null
-                    ? Image.network(photoUrl, width: 50, height: 50, fit: BoxFit.cover)
-                    : const Icon(Icons.person, size: 50),
-                title: Text(displayName),
-                subtitle: Text("Email: $email"),
+                contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                // Profile Picture
+                leading: CircleAvatar(
+                  radius: 28,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                  child: photoUrl == null
+                      ? Text(name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                      style: const TextStyle(fontWeight: FontWeight.bold))
+                      : null,
+                ),
+                // User Name
+                title: Text(
+                  name,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                // User Info (Email & Phone)
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 4),
+                    // Email Row
+                    Row(
+                      children: [
+                        const Icon(Icons.email, size: 14, color: Colors.grey),
+                        const SizedBox(width: 6),
+                        Expanded(child: Text(email, style: const TextStyle(fontSize: 13))),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    // Phone Row
+                    Row(
+                      children: [
+                        const Icon(Icons.phone, size: 14, color: Colors.grey),
+                        const SizedBox(width: 6),
+                        Text(phone, style: const TextStyle(fontSize: 13)),
+                      ],
+                    ),
+                  ],
+                ),
+                // Delete Action
                 trailing: PopupMenuButton<String>(
                   onSelected: (v) async {
-                    if (v == 'delete') await d.reference.delete();
+                    if (v == 'delete') {
+                      // Optional: Add a confirm dialog here before deleting
+                      await d.reference.delete();
+                    }
                   },
                   itemBuilder: (_) => const [
-                    PopupMenuItem(value: 'delete', child: Text('Delete')),
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, color: Colors.red, size: 20),
+                          SizedBox(width: 8),
+                          Text('Delete User', style: TextStyle(color: Colors.red)),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               );

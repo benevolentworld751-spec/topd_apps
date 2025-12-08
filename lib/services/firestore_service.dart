@@ -68,7 +68,7 @@ class FirestoreService {
 
       for (var doc in snapshot.docs) {
         final cat = doc["category"] ?? "Other";
-        final img = doc["imageUrl"] ?? "";
+        final img = doc["image"] ?? "";
 
         // Store only 1 image per category (first item)
         categoryImages.putIfAbsent(cat, () => img);

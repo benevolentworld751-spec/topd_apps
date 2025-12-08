@@ -31,7 +31,13 @@ class CategoryModel {
   final String name;
   final String image;
 
-  CategoryModel({required this.id, required this.name, required this.image});
+  CategoryModel(
+      {
+        required this.id,
+        required this.name,
+        required this.image
+      }
+      );
 
   factory CategoryModel.fromSnapshot(DocumentSnapshot doc, Map<String, dynamic> data) {
     return CategoryModel(

@@ -66,7 +66,7 @@ class MenuScreen extends StatelessWidget {
                           // CHANGE THIS LINE:
                           // Old: categoryId: doc.id,
                           // New: Pass the name because your items use "Main Course"
-                          categoryId: doc.id,
+                          categoryId: name,
                           categoryName: name,
                         ),
                       ),
