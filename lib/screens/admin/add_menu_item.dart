@@ -28,7 +28,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
   List<Map<String, dynamic>> _variants = [];
 
   Uint8List? _webImage;
-  String? _imageUrl;
+  String? _image;
   bool _loading = false;
 
   @override
@@ -59,7 +59,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
         final data = doc.data()!;
         _nameController.text = data['name'] ?? '';
         _selectedCategory = data['category'];
-        _imageUrl = data['image'];
+        _image = data['image'];
         _isVeg = data['isVeg'] ?? false;
 
         // Load variants if they exist, otherwise try to load old legacy price format
@@ -133,21 +133,21 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
     setState(() => _loading = true);
 
     try {
-      String? uploadedUrl = _imageUrl;
+      String? uploaded = _image;
 
       if (_webImage != null) {
         final ref = FirebaseStorage.instance
             .ref()
             .child('menuItems/${DateTime.now().millisecondsSinceEpoch}.jpg');
         await ref.putData(_webImage!);
-        uploadedUrl = await ref.getDownloadURL();
+        uploaded = await ref.getDownloadURL();
       }
 
       final data = {
         'name': _nameController.text.trim(),
         'category': _selectedCategory,
         'isVeg': _isVeg,
-        'image': uploadedUrl ?? '',
+        'image': uploaded ?? '',
         'variants': _variants, // Saving the list of price/units
         'searchKeywords': _generateSearchKeywords(_nameController.text.trim()), // Optional helper
         'updatedAt': FieldValue.serverTimestamp(),
@@ -188,8 +188,8 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
   Widget build(BuildContext context) {
     final imageWidget = _webImage != null
         ? Image.memory(_webImage!, width: 120, height: 120, fit: BoxFit.cover)
-        : (_imageUrl != null && _imageUrl!.isNotEmpty
-        ? Image.network(_imageUrl!, width: 120, height: 120, fit: BoxFit.cover)
+        : (_image != null && _image!.isNotEmpty
+        ? Image.network(_image!, width: 120, height: 120, fit: BoxFit.cover)
         : Container(
         width: 120, height: 120,
         color: Colors.grey[200],

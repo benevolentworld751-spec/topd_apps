@@ -21,13 +21,10 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
   final _addUnitController = TextEditingController();
 
   String? _selectedCategory;
-
   // Default to false. In your menu: Green Dot = Veg, Red Dot = Non-Veg
   bool _isVeg = false;
-
   // Stores the list of price/unit pairs
   List<Map<String, dynamic>> _variants = [];
-
   // Image handling
   Uint8List? _webImage; // For new picked image
   String? _currentImageUrl; // For existing image from DB
@@ -46,7 +43,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
     _addUnitController.dispose();
     super.dispose();
   }
-
   Future<void> _loadItem() async {
     setState(() => _loading = true);
     try {
@@ -75,7 +71,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
       setState(() => _loading = false);
     }
   }
-
   // Pick image from gallery
   Future<void> _pickImage() async {
     final picker = ImagePicker();
@@ -85,7 +80,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
       setState(() => _webImage = bytes);
     }
   }
-
   // Add a price variant to the list
   void _addVariant() {
     final price = double.tryParse(_addPriceController.text.trim());
@@ -97,36 +91,30 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
       );
       return;
     }
-
     setState(() {
       _variants.add({'price': price, 'unit': unit});
       _addPriceController.clear();
       _addUnitController.clear();
     });
   }
-
   // Remove a variant
   void _removeVariant(int index) {
     setState(() {
       _variants.removeAt(index);
     });
   }
-
   Future<void> _saveItem() async {
     if (!_formKey.currentState!.validate() || _selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please check inputs')));
       return;
     }
-
     if (_variants.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Add at least one price variant')));
       return;
     }
-
     setState(() => _loading = true);
     try {
       String finalImageUrl = _currentImageUrl ?? '';
-
       // Upload new image if selected
       if (_webImage != null) {
         final ref = FirebaseStorage.instance
@@ -135,7 +123,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
         await ref.putData(_webImage!);
         finalImageUrl = await ref.getDownloadURL();
       }
-
       // Update Firestore
       await FirebaseFirestore.instance.collection('menuItems').doc(widget.itemId).update({
         'name': _nameController.text.trim(),
@@ -165,7 +152,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
     } else {
       imageWidget = Container(color: Colors.grey[300], width: 100, height: 100, child: const Icon(Icons.add_a_photo));
     }
-
     return Scaffold(
       appBar: AppBar(title: const Text('Edit Menu Item')),
       body: _loading
@@ -190,7 +176,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
               const SizedBox(height: 10),
               const Center(child: Text("Tap image to change", style: TextStyle(color: Colors.grey, fontSize: 12))),
               const SizedBox(height: 20),
-
               // --- 2. Category & Name ---
               FutureBuilder<QuerySnapshot>(
                 future: FirebaseFirestore.instance.collection('categories').get(),
@@ -207,14 +192,12 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'Item Name', border: OutlineInputBorder()),
                 validator: (v) => v!.isEmpty ? 'Enter name' : null,
               ),
               const SizedBox(height: 16),
-
               // --- 3. Veg/Non-Veg Switch ---
               Container(
                 decoration: BoxDecoration(
@@ -233,7 +216,6 @@ class _EditMenuItemScreenState extends State<EditMenuItemScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-
               // --- 4. Variants (Price & Unit) ---
               const Text("Price & Portions", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),

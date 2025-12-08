@@ -32,7 +32,7 @@ class AdminMenuItemsScreen extends StatelessWidget {
                     ? Image.network(imageUrl, width: 50, height: 50, fit: BoxFit.cover)
                     : const Icon(Icons.fastfood, size: 50),
                 title: Text(name),
-                subtitle: Text('₹$price • Category: $category'),
+                subtitle: Text('₹$price • category: $category'),
                 trailing: PopupMenuButton<String>(
                   onSelected: (v) async {
                     if (v == 'edit') {
@@ -49,6 +49,13 @@ class AdminMenuItemsScreen extends StatelessWidget {
             },
           );
         },
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/admin/addMenuItem');
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

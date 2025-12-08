@@ -27,14 +27,14 @@ class AppOrderItem {
   final String category;
   final double price;
   final int quantity;
-  final String imageUrl;
+  final String image;
 
   AppOrderItem({
     required this.name,
     required this.category,
     required this.price,
     required this.quantity,
-    required this.imageUrl,
+    required this.image,
   });
 
   factory AppOrderItem.fromMap(Map<String, dynamic>? map) {
@@ -44,7 +44,7 @@ class AppOrderItem {
         category: 'N/A',
         price: 0.0,
         quantity: 1,
-        imageUrl: '',
+        image: '',
       );
     }
     final item = map['item'] as Map<String, dynamic>? ?? {};
@@ -53,7 +53,7 @@ class AppOrderItem {
       category: item['category'] ?? 'N/A',
       price: (item['price'] ?? 0).toDouble(),
       quantity: map['quantity'] ?? 1,
-      imageUrl: item['imageUrl'] ?? '',
+      image: item['image'] ?? '',
     );
   }
 
@@ -208,7 +208,7 @@ class OrderCard extends StatelessWidget {
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: Image.network(
-                        item.imageUrl,
+                        item.image,
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
