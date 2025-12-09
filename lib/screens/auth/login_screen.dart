@@ -117,12 +117,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 16, width: 24,),
               TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/forgotPassword');
                   },
-                  child: const Text("Forgot Password?")),
+                  child: const Text("Forgot Password?")
+              ),
               const SizedBox(height: 24),
               _isLoading
                   ? const CircularProgressIndicator()

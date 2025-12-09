@@ -2,7 +2,7 @@ class MenuItem {
   final String id;
   final String name;
   final String description;
-  final String imageUrl;
+  final String image;
   final double price;
   final String category;
 
@@ -11,7 +11,7 @@ class MenuItem {
     required this.id,
     required this.name,
     required this.description,
-    required this.imageUrl,
+    required this.image,
     required this.price,
     required this.category,
 
@@ -23,7 +23,7 @@ class MenuItem {
       id: id,
       name: data['name'] ?? '',
       description: data['description'] ?? '',
-      imageUrl: data['imageUrl'] ?? '',
+      image: data['image'] ?? '',
       price: (data['price'] ?? 0).toDouble(),
       category: data['category'] ?? 'Other',
     );
@@ -33,7 +33,7 @@ class MenuItem {
     return {
       'name': name,
       'description': description,
-      'imageUrl': imageUrl,
+      'image': image,
       'price': price,
       'category': category,
 
@@ -46,7 +46,7 @@ class MenuItem {
       id: map['id'] ?? '',
       name: map['name'] ?? '',
       description: map['description'] ?? '',
-      imageUrl: map['imageUrl'] ?? '',
+      image: map['image'] ?? '',
       price: (map['price'] ?? 0).toDouble(),
       category: map['category'] ?? 'Other',
     );
@@ -57,7 +57,7 @@ class MenuItem {
       'id': id,
       'name': name,
       'description': description,
-      'imageUrl': imageUrl,
+      'image': image,
       'price': price,
       'category': category,
     };

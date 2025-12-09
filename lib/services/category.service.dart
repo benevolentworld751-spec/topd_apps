@@ -8,7 +8,7 @@ class CategoryService {
     final snapshot = await _db.collection("categories").get();
 
     return snapshot.docs
-        .map((doc) => CategoryModel.fromMap(doc.id, doc.data()))
+        .map((doc) => CategoryModel.fromSnapshot(doc.id as DocumentSnapshot<Object?>, doc.data()))
         .toList();
   }
 }

@@ -1,125 +1,78 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.Pods/
-.swiftpm/
-migrate_working_dir/
+      # Flutter/Dart/Pub related
+      .dart_tool/
+      .packages
+      .pub-cache/
+      .pub/
+      /build/
+      flutter_export_environment.sh
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
+      # Android related
+      **/android/**/gradle-wrapper.jar
+      **/android/**/gradle/
+      **/android/**/gradlew
+      **/android/**/gradlew.bat
+      **/android/**/local.properties
+      **/android/**/.gradle/
+      **/android/**/app/*.keystore
+      **/android/**/app/*.jks
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+      # iOS related
+      **/ios/Pods/
+      **/ios/.symlinks/
+      **/ios/Flutter/Flutter.framework
+      **/ios/Flutter/Flutter.podspec
+      **/ios/Flutter/App.framework
+      **/ios/Flutter/engine/
+      **/ios/Flutter/Generated.xcconfig
+      **/ios/Flutter/Flutter.podspec
+      **/ios/Flutter/ephemeral/
+      **/ios/.generated/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-/coverage/
+      # macOS related
+      **/macos/Flutter/ephemeral/
+      **/macos/Pods/
 
-# Symbolication related
-app.*.symbols
+      # Web related
+      **/web/.dart_tool/
 
-# Obfuscation related
-app.*.map.json
+      # Windows related
+      **/windows/flutter/ephemeral/
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+      # Linux related
+      **/linux/flutter/ephemeral/
 
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-*.iml
+      # VSCode files
+      .vscode/
+      .idea/
+      *.iml
 
-# IntelliJ related
-.idea/
-*.ipr
-*.iws
-*.iml
+      # Xcode files
+      DerivedData/
+      *.xcworkspace/
+      *.xcuserdata/
+      *.xcuserstate
+      *.xcodeproj/project.xcworkspace/
+      *.xcodeproj/xcuserdata/
+      *.xcodeproj/xcshareddata/
 
-# Visual Studio Code related
-.vscode/
-*.code-workspace
+      # Logs & temp files
+      *.log
+      *.tmp
+      *.temp
+      *.lock
+      *.DS_Store
 
-# Flutter related
-.dart_tool/
-.packages
-.pub-cache/
-.pub/
-build/
-flutter_*.png
+      # Firebase / Google Services (DO NOT UPLOAD)
+      **/android/app/google-services.json
+      **/ios/Runner/GoogleService-Info.plist
+      **/macos/Runner/GoogleService-Info.plist
 
-# Android related
-**/android/app/debug/
-**/android/app/profile/
-**/android/app/release/
-**/android/app/.gradle/
-**/android/.gradle/
-**/android/local.properties
-**/android/gradle.properties
-**/android/.idea/
-**/android/*.iml
+      # Fastlane
+      fastlane/report.xml
+      fastlane/Preview.html
+      fastlane/screenshots
+      fastlane/test_output
 
-# iOS related
-**/ios/Flutter/.last_build_id
-**/ios/Pods/
-**/ios/.generated/
-**/ios/*.xcworkspace
-**/ios/Runner.xcodeproj/project.xcworkspace/
-**/ios/Runner.xcodeproj/xcuserdata/
-**/ios/Runner.xcodeproj/project.xcworkspace/xcuserdata/
-**/ios/.symlinks/
-**/ios/Flutter/flutter_export_environment.sh
-
-# Web related
-**/build/web/
-
-# Windows related
-**/windows/flutter/ephemeral/
-
-# macOS related
-**/macos/Flutter/ephemeral/
-
-# Linux related
-**/linux/flutter/ephemeral/
-
-# Firebase related
-*.firebase/
-.google/
-
-# App data
-*.keystore
-*.jks
-*.p12
-
-# Crashlytics
-**/android/app/src/main/java/com/*/*/Crashlytics/
-
-# Generated plugin registrant
-**/GeneratedPluginRegistrant.*
+      # Misc
+      pubspec.lock
+      coverage/

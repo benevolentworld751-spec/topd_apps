@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../models/category_model.dart';
 import '../../services/category.service.dart';
-import '../models/category_model.dart';
-import '../services/category_service.dart';
-import 'menu_screen.dart';
+
+// 1. Update this import to point to your ProductListScreen
+import 'product_list_screen.dart';
+// (If product_list_screen.dart is in a different folder, adjust the path above)
 
 class CategoryScreen extends StatelessWidget {
   final CategoryService _categoryService = CategoryService();
+
+  // Add key to constructor is good practice
+  CategoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +49,15 @@ class CategoryScreen extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () {
+                    // 2. CHANGED: Navigate to ProductListScreen instead of MenuScreen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => MenuScreen(category: category.name),
+                        builder: (_) => ProductListScreen(
+                          // Ensure your CategoryModel has an 'id' field
+                          categoryId: category.name,
+                          categoryName: category.name,
+                        ),
                       ),
                     );
                   },
@@ -56,7 +65,7 @@ class CategoryScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       color: Colors.white,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black12,
                           blurRadius: 6,
@@ -67,18 +76,28 @@ class CategoryScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Image.network(
-                          category.image,
-                          height: 80,
-                          width: 80,
-                          fit: BoxFit.contain,
+                        // Safe image loading
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Image.network(
+                              category.image,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.fastfood, size: 50, color: Colors.grey);
+                              },
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          category.name,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0, left: 8, right: 8),
+                          child: Text(
+                            category.name,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],

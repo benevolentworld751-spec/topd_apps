@@ -43,7 +43,7 @@ class _OrderSummaryScreenState extends State<OrderSummaryScreen> {
         'item': {
           'name': c.item.name,
           'price': c.item.price,
-          'imageUrl': c.item.imageUrl,
+          'image': c.item.imageUrl,
           'category': c.item.category,
         },
         'quantity': c.quantity,
